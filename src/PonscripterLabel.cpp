@@ -166,6 +166,7 @@ sfunc_lut_t::sfunc_lut_t() {
     dict["getinsert"]        = &PonscripterLabel::getinsertCommand;
     dict["getlog"]           = &PonscripterLabel::getlogCommand;
     dict["getmousepos"]      = &PonscripterLabel::getmouseposCommand;
+    dict["getmouseover"]     = &PonscripterLabel::getmouseoverCommand;
     dict["getmp3vol"]        = &PonscripterLabel::getmp3volCommand;
     dict["getpage"]          = &PonscripterLabel::getpageCommand;
     dict["getpageup"]        = &PonscripterLabel::getpageupCommand;
@@ -243,6 +244,7 @@ sfunc_lut_t::sfunc_lut_t() {
     dict["mp3save"]          = &PonscripterLabel::mp3Command;
     dict["mp3stop"]          = &PonscripterLabel::playstopCommand;
     dict["mp3vol"]           = &PonscripterLabel::mp3volCommand;
+    dict["movie"]            = &PonscripterLabel::movieCommand;
     dict["mpegplay"]         = &PonscripterLabel::mpegplayCommand;
     dict["msp"]              = &PonscripterLabel::mspCommand;
     dict["msp2"]             = &PonscripterLabel::mspCommand;
@@ -320,6 +322,7 @@ sfunc_lut_t::sfunc_lut_t() {
     dict["texton"]           = &PonscripterLabel::textonCommand;
     dict["textshow"]         = &PonscripterLabel::textshowCommand;
     dict["textspeed"]        = &PonscripterLabel::textspeedCommand;
+    dict["textspeeddefault"] = &PonscripterLabel::textspeeddefaultCommand;
     dict["transbtn"]         = &PonscripterLabel::transbtnCommand;
     dict["trap"]             = &PonscripterLabel::trapCommand;
     dict["voicevol"]         = &PonscripterLabel::voicevolCommand;
@@ -2266,6 +2269,8 @@ void PonscripterLabel::disableGetButtonFlag()
     getenter_flag    = false;
     getcursor_flag   = false;
     spclclk_flag     = false;
+    getmouseover_flag = false;
+    getmouseover_min = getmouseover_max = 0;
 }
 
 

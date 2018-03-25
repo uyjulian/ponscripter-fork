@@ -514,7 +514,7 @@ void UpdateMPEG(void *data, SMPEG_Frame *frame) {
   c->dirty = 1;
 }
 
-int PonscripterLabel::playMPEG(const pstring& filename, bool click_flag,
+int PonscripterLabel::playMPEG(const pstring& filename, bool click_flag, bool loop_flag,
                                SubtitleDefs& subtitles)
 {
     int ret = 0;
@@ -573,23 +573,32 @@ int PonscripterLabel::playMPEG(const pstring& filename, bool click_flag,
 
         Mix_HookMusic(mp3callback, mpeg_sample);
 
-
+        if (loop_flag) {
+            SMPEG_loop(mpeg_sample, -1);
+        }
         SMPEG_play(mpeg_sample);
 
         bool done_flag = false;
         bool interrupted_redraw = false;
         bool done_click_down = false;
 
-        while (!(done_flag & click_flag) &&
-               SMPEG_status(mpeg_sample) == SMPEG_PLAYING)
+        while (!done_flag)
         {
+            if (SMPEG_status(mpeg_sample) != SMPEG_PLAYING) {
+                if (loop_flag) {
+                    SMPEG_play( mpeg_sample );
+                } else {
+                    break;
+                }
+            }
+
             SDL_Event event, tmp_event;
             while (SDL_PollEvent(&event)) {
                 switch (event.type) {
                 case SDL_KEYUP: {
                     int s = ((SDL_KeyboardEvent*) &event)->keysym.sym;
                     if (s == SDLK_RETURN || s == SDLK_SPACE || s == SDLK_ESCAPE)
-                        done_flag = true;
+                        done_flag = click_flag;
                     if (s == SDLK_m) {
                         volume_on_flag = !volume_on_flag;
                         SMPEG_setvolume(mpeg_sample, !volume_on_flag? 0 : music_volume);
@@ -613,7 +622,7 @@ int PonscripterLabel::playMPEG(const pstring& filename, bool click_flag,
                     break;
                 case SDL_MOUSEBUTTONUP:
                     if(done_click_down)
-                        done_flag = true;
+                        done_flag = click_flag;
                     break;
                 case INTERNAL_REDRAW_EVENT:
                     interrupted_redraw = true;

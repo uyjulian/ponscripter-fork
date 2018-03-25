@@ -197,6 +197,12 @@ int PonscripterLabel::transbtnCommand(const pstring& cmd)
     return RET_CONTINUE;
 }
 
+int PonscripterLabel::textspeeddefaultCommand(const pstring& cmd)
+{
+    sentence_font.wait_time = -1;
+    return RET_CONTINUE;
+}
+
 int PonscripterLabel::textspeedCommand(const pstring& cmd)
 {
     sentence_font.wait_time = script_h.readIntValue();
@@ -1537,8 +1543,31 @@ int PonscripterLabel::mpegplayCommand(const pstring& cmd)
         subtitles = parseSubtitles(script_h.readStrValue());
     }
     stopBGM(false);
-    if (playMPEG(name, cancel, subtitles))
+    if (playMPEG(name, cancel, false, subtitles))
         endCommand("end");
+    return RET_CONTINUE;
+}
+
+
+int PonscripterLabel::movieCommand(const pstring& cmd)
+{
+    pstring name = script_h.readStrValue();
+    bool cancel = false, loop = false;
+    SubtitleDefs subtitles;
+
+    while (script_h.hasMoreArgs()) {
+        Expression e = script_h.readStrExpr();
+        if (e.is_bareword("click")) {
+            cancel = true;
+        } else if (e.is_bareword("loop")) {
+            loop = true;
+        }
+    }
+
+    stopBGM(false);
+    if (playMPEG(name, cancel, loop, subtitles))
+        endCommand("end");
+
     return RET_CONTINUE;
 }
 
@@ -2248,10 +2277,19 @@ int PonscripterLabel::getspsizeCommand(const pstring& cmd)
 {
     int no = script_h.readIntValue();
 
-    script_h.readIntExpr().mutate(sprite_info[no].pos.w *
-				  screen_ratio2 / screen_ratio1);
-    script_h.readIntExpr().mutate(sprite_info[no].pos.h *
-				  screen_ratio2 / screen_ratio1);
+    int res_multiplier = 1;
+    #ifdef USE_2X_MODE
+    res_multiplier = 2;
+    #endif
+
+    script_h.readIntExpr().mutate(
+        (sprite_info[no].pos.w * screen_ratio2 / screen_ratio1) /
+        res_multiplier
+    );
+    script_h.readIntExpr().mutate(
+        (sprite_info[no].pos.h * screen_ratio2 / screen_ratio1) /
+        res_multiplier
+    );
     if (script_h.hasMoreArgs())
         script_h.readIntExpr().mutate(sprite_info[no].num_of_cells);
 
@@ -2390,6 +2428,16 @@ int PonscripterLabel::getmouseposCommand(const pstring& cmd)
 				  screen_ratio2 / screen_ratio1);
     script_h.readIntExpr().mutate(current_button_state.y *
 				  screen_ratio2 / screen_ratio1);
+    return RET_CONTINUE;
+}
+
+
+int PonscripterLabel::getmouseoverCommand(const pstring& cmd)
+{
+    getmouseover_flag = true;
+    getmouseover_min = script_h.readIntValue();
+    getmouseover_max = script_h.readIntValue();
+
     return RET_CONTINUE;
 }
 

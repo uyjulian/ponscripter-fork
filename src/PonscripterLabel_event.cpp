@@ -369,8 +369,33 @@ void PonscripterLabel::mouseMoveEvent(SDL_MouseMotionEvent* event)
     current_button_state.x = event->x;
     current_button_state.y = event->y;
 
-    if (event_mode & WAIT_BUTTON_MODE)
+    if (event_mode & WAIT_BUTTON_MODE) {
         mouseOverCheck(current_button_state.x, current_button_state.y);
+        if (getmouseover_flag &&
+            (current_over_button >= getmouseover_min) &&
+            (current_over_button <= getmouseover_max)){
+            // Ons used .set here, check for validity
+            //current_button_state.set(current_over_button);
+            //volatile_button_state.set(current_over_button);
+            current_button_state.button  = current_over_button;
+            volatile_button_state.button  = current_over_button;
+            playClickVoice();
+            stopAnimation(clickstr_state);
+            advancePhase();
+            // Onscripter returns boolean??
+            //return true;
+        /*
+        } else if (btnarea_flag &&
+                 ( ((btnarea_pos < 0) && (event->y > -btnarea_pos)) ||
+                   ((btnarea_pos > 0) && (event->y < btnarea_pos)) )){
+            current_button_state.set(-4);
+            volatile_button_state.set(-4);
+            playClickVoice();
+            stopCursorAnimation( clickstr_state );
+            return true;
+        */
+        }
+    }
 }
 
 

@@ -180,6 +180,7 @@ public:
     int trapCommand(const pstring& cmd);
     int transbtnCommand(const pstring& cmd);
     int textspeedCommand(const pstring& cmd);
+    int textspeeddefaultCommand(const pstring& cmd);
     int textshowCommand(const pstring& cmd);
     int textonCommand(const pstring& cmd);
     int textoffCommand(const pstring& cmd);
@@ -228,6 +229,7 @@ public:
     int ofscopyCommand(const pstring& cmd);
     int negaCommand(const pstring& cmd);
     int mspCommand(const pstring& cmd);
+    int movieCommand(const pstring& cmd);
     int mpegplayCommand(const pstring& cmd);
     int mp3volCommand(const pstring& cmd);
     int mp3fadeoutCommand(const pstring& cmd);
@@ -273,6 +275,7 @@ public:
     int getpageCommand(const pstring& cmd);
     int getmp3volCommand(const pstring& cmd);
     int getmouseposCommand(const pstring& cmd);
+    int getmouseoverCommand(const pstring& cmd);
     int getlogCommand(const pstring& cmd);
     int getinsertCommand(const pstring& cmd);
     int getfunctionCommand(const pstring& cmd);
@@ -578,6 +581,8 @@ private:
     bool getenter_flag;
     bool getcursor_flag;
     bool spclclk_flag;
+    bool getmouseover_flag;
+    int  getmouseover_min, getmouseover_max;
 
     void resetSentenceFont();
     void refreshMouseOverButton();
@@ -829,7 +834,7 @@ private:
     int setVolumeMute(bool do_mute);
 
     SubtitleDefs parseSubtitles(pstring file);
-    int playMPEG(const pstring& filename, bool click_flag,SubtitleDefs& subtitles);
+    int playMPEG(const pstring& filename, bool click_flag, bool loop_flag, SubtitleDefs& subtitles);
     void playAVI(const pstring& filename, bool click_flag);
 
     enum { WAVE_PLAY        = 0,
