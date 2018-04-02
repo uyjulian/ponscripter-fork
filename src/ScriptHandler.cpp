@@ -430,6 +430,7 @@ const char* ScriptHandler::readStr()
     current_script = next_script;
     SKIP_SPACE(current_script);
     const char* buf = current_script;
+    bool did_concat = false;
 
     string_buffer.trunc(0);
 
@@ -437,9 +438,13 @@ const char* ScriptHandler::readStr()
         string_buffer += parseStr(&buf);
         buf = checkComma(buf);
         if (buf[0] != '+') break;
-
+        did_concat = true;
         buf++;
     }
+    if (did_concat) {
+        current_variable.type = VAR_NONE | VAR_CONST;
+    }
+
     next_script = buf;
 
     return string_buffer;
