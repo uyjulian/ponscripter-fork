@@ -249,7 +249,7 @@ void PonscripterLabel::restoreTextBuffer()
 int PonscripterLabel::enterTextDisplayMode(bool text_flag)
 {
     if (line_enter_status <= 1 && saveon_flag && internal_saveon_flag &&
-    text_flag && current_read_language == 1) {
+    text_flag && (current_read_language == 1 || current_read_language == -1)) {
         saveSaveFile(-1);
         internal_saveon_flag = false;
     }
