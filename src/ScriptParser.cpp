@@ -362,6 +362,13 @@ int ScriptParser::open(const char* preferred_script)
         screen_width  = 320 * screen_ratio1 / screen_ratio2;
         screen_height = 240 * screen_ratio1 / screen_ratio2;
         break;
+    case ScriptHandler::SCREEN_SIZE_w720:
+        screen_ratio1 = 1;
+        screen_ratio2 = 1;
+        // Half of 720 dimensions, for use in 2x mode
+        screen_width  = 640 * screen_ratio1 / screen_ratio2;
+        screen_height = 360 * screen_ratio1 / screen_ratio2;
+        break;
     case ScriptHandler::SCREEN_SIZE_640x480:
     default:
 #ifdef PDA
@@ -375,6 +382,7 @@ int ScriptParser::open(const char* preferred_script)
         screen_height = 480 * screen_ratio1 / screen_ratio2;
         break;
     }
+    
 #ifdef USE_2X_MODE
     screen_width  *= 2;
     screen_height *= 2;

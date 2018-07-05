@@ -994,16 +994,23 @@ int ScriptHandler::readScript(DirPaths *path, const char* prefer_name)
     while (script_buffer[0] == ';') {
         if (!strncmp(buf, "mode", 4)) {
             buf += 4;
-            if (!strncmp(buf, "800", 3))
+            if (!strncmp(buf, "800", 3)) {
                 screen_size = SCREEN_SIZE_800x600;
-            else if (!strncmp(buf, "400", 3))
+                buf += 3;
+            } else if (!strncmp(buf, "400", 3)) {
                 screen_size = SCREEN_SIZE_400x300;
-            else if (!strncmp(buf, "320", 3))
+                buf += 3;
+            } else if (!strncmp(buf, "320", 3)) {
                 screen_size = SCREEN_SIZE_320x240;
-            else
+                buf += 3;
+            } else if (!strncmp(buf, "w720", 4)) {
+                screen_size = SCREEN_SIZE_w720;
+                buf += 4;
+            } else {
                 screen_size = SCREEN_SIZE_640x480;
+                buf += 3;
+            }
 
-            buf += 3;
         }
         else if (!strncmp(buf, "value", 5)) {
             buf += 5;
