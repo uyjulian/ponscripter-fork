@@ -366,8 +366,13 @@ int ScriptParser::open(const char* preferred_script)
         screen_ratio1 = 1;
         screen_ratio2 = 1;
         // Half of 720 dimensions, for use in 2x mode
+#ifdef USE_2X_MODE
         screen_width  = 640 * screen_ratio1 / screen_ratio2;
         screen_height = 360 * screen_ratio1 / screen_ratio2;
+#else
+        screen_width  = 1280 * screen_ratio1 / screen_ratio2;
+        screen_height = 720 * screen_ratio1 / screen_ratio2;
+#endif
         break;
     case ScriptHandler::SCREEN_SIZE_640x480:
     default:
