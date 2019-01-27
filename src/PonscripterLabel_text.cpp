@@ -114,7 +114,41 @@ PonscripterLabel::drawChar(const char* text, Fontinfo* info, bool flush_flag,
         float adv = info->GlyphAdvance(unicode, next);
         if (isNonspacing(unicode)) info->advanceBy(-adv);
 
-        if (info->isNoRoomFor(adv)) info->newLine();
+        if (current_read_language == 1) {
+            // Kinsoku Shori for Japanese text only
+            if (isEndKinsoku(unicode)) {
+                wchar middle_unicode = unicode;
+                float middle_adv = 0;
+                int middle_bytes = 0, temp_bytes;
+                while (isEndKinsoku(middle_unicode)) {
+                    middle_bytes += temp_bytes;
+                    middle_adv += info->GlyphAdvance(middle_unicode);
+                    middle_unicode = file_encoding->DecodeWithLigatures(text + middle_bytes, *info, temp_bytes);
+                }
+                if (info->isNoRoomFor(middle_adv)) {
+                    info->newLine();
+                }
+            } else if (isStartKinsoku(next)) {
+                wchar middle_unicode = next;
+                float middle_adv = adv;
+                int middle_bytes = bytes, temp_bytes;
+                while (isStartKinsoku(middle_unicode)) {
+                    middle_bytes += temp_bytes;
+                    middle_adv += info->GlyphAdvance(middle_unicode);
+                    middle_unicode = file_encoding->DecodeWithLigatures(text + middle_bytes, *info, temp_bytes);
+                }
+                if (info->isNoRoomFor(middle_adv)) {
+                    info->newLine();
+                }
+            } else if (info->isNoRoomFor(adv)) {
+                info->newLine();
+            }
+        } else {
+            // Defaul language endline processing
+            if (info->isNoRoomFor(adv)) {
+                info->newLine();
+            }
+        }
 
         float x = info->GetX() * screen_ratio1 / screen_ratio2;
         if (info->getRTL())

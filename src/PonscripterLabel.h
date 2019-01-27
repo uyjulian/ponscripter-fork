@@ -866,6 +866,9 @@ private:
 
     void executeLabel();
     int parseLine();
+    bool isStartKinsoku(wchar char_val);
+    bool isMiddleKinsoku(wchar char_val);
+    bool isEndKinsoku(wchar char_val);
 
     void mouseOverCheck(int x, int y);
 

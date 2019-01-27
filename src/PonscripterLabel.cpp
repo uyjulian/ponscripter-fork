@@ -1706,6 +1706,46 @@ bool PonscripterLabel::check_orphan_control()
         || p == '!' || p == 0xff01 || p == '?' || p == 0xff1f;
 }
 
+bool PonscripterLabel::isStartKinsoku(wchar char_val) {
+    return (char_val == 0x3001 || char_val == 0x3002 || char_val == 0x30FB ||
+        char_val == 0x203C || char_val == 0x2047 || char_val == 0x2048 ||
+        char_val == 0x2049 || char_val == 0xFF1F || char_val == 0xFF01 ||
+        char_val == 0x2010 || char_val == 0x30A0 || char_val == 0x2013 ||
+        char_val == 0x301C || char_val == 0xFF5E || char_val == 0x309D ||
+        char_val == 0x309E || char_val == 0x30FC || char_val == 0x30A1 ||
+        char_val == 0x30A3 || char_val == 0x30A5 || char_val == 0x30A7 ||
+        char_val == 0x30A9 || char_val == 0x30C3 || char_val == 0x30E3 ||
+        char_val == 0x30E5 || char_val == 0x30E7 || char_val == 0x30EE ||
+        char_val == 0x30F5 || char_val == 0x30F6 || char_val == 0x3041 ||
+        char_val == 0x3043 || char_val == 0x3045 || char_val == 0x3047 ||
+        char_val == 0x3049 || char_val == 0x3063 || char_val == 0x3083 ||
+        char_val == 0x3085 || char_val == 0x3087 || char_val == 0x308E ||
+        (char_val >= 0x31F0 && char_val <= 0x31FF) ||
+        char_val == 0x3095 || char_val == 0x3096 ||
+        char_val == 0x3005 || char_val == 0x303B || char_val == 0xFF5D ||
+        char_val == 0x3015 || char_val == 0x3009 || char_val == 0x300B ||
+        char_val == 0x300D || char_val == 0x300F || char_val == 0x3011 ||
+        char_val == 0x3019 || char_val == 0x3017 || char_val == 0x301F ||
+        char_val == 0xFF60 || char_val == 0xBB ||
+        char_val == 0x2019 || char_val == 0x201D || char_val == 0x2C ||
+        char_val == 0x29 || char_val == 0x5D);
+}
+
+bool PonscripterLabel::isMiddleKinsoku(wchar char_val) {
+    return (char_val == 0x2014 || char_val == 0x2026 || char_val == 0x2025 ||
+        char_val == 0x3033 || char_val == 0x3034 || char_val == 0x3035 || 
+        (char_val >= 0xFF10 && char_val <= 0xFF19));
+}
+
+// TODO finish end kinsoku
+bool PonscripterLabel::isEndKinsoku(wchar char_val) {
+    return (char_val == 0x300C || char_val == 0x300E || char_val == 0xFF5B ||
+        char_val == 0x3014 || char_val == 0x3008 || char_val == 0x300A ||
+        char_val == 0x3010 || char_val == 0x3018 || char_val == 0x3016 ||
+        char_val == 0x301D || char_val == 0x2018 || char_val == 0x201C ||
+        char_val == 0xFF5F || char_val == 0xAB);
+}
+
 int PonscripterLabel::parseLine()
 {
     int ret = 0;
