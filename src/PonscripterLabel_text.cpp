@@ -119,7 +119,7 @@ PonscripterLabel::drawChar(const char* text, Fontinfo* info, bool flush_flag,
             if (isEndKinsoku(unicode)) {
                 wchar middle_unicode = unicode;
                 float middle_adv = 0;
-                int middle_bytes = 0, temp_bytes;
+                int middle_bytes = 0, temp_bytes = 0;
                 while (isEndKinsoku(middle_unicode)) {
                     middle_bytes += temp_bytes;
                     middle_adv += info->GlyphAdvance(middle_unicode);
@@ -130,8 +130,8 @@ PonscripterLabel::drawChar(const char* text, Fontinfo* info, bool flush_flag,
                 }
             } else if (isStartKinsoku(next)) {
                 wchar middle_unicode = next;
-                float middle_adv = adv;
-                int middle_bytes = bytes, temp_bytes;
+                float middle_adv = 0;
+                int middle_bytes = bytes, temp_bytes = 0;
                 while (isStartKinsoku(middle_unicode)) {
                     middle_bytes += temp_bytes;
                     middle_adv += info->GlyphAdvance(middle_unicode);
