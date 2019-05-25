@@ -284,7 +284,8 @@ public:
            SCREEN_SIZE_800x600 = 1,
            SCREEN_SIZE_400x300 = 2,
            SCREEN_SIZE_320x240 = 3,
-           SCREEN_SIZE_w720 = 4 };
+           SCREEN_SIZE_w720 = 4,
+           SCREEN_SIZE_w1080 = 5 };
     int global_variable_border;
 
     pstring game_identifier;

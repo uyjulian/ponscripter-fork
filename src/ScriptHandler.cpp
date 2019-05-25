@@ -1006,6 +1006,9 @@ int ScriptHandler::readScript(DirPaths *path, const char* prefer_name)
             } else if (!strncmp(buf, "w720", 4)) {
                 screen_size = SCREEN_SIZE_w720;
                 buf += 4;
+            } else if (!strncmp(buf, "w1080", 5)) {
+                screen_size = SCREEN_SIZE_w1080;
+                buf += 5;
             } else {
                 screen_size = SCREEN_SIZE_640x480;
                 buf += 3;

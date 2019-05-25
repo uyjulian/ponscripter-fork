@@ -374,6 +374,18 @@ int ScriptParser::open(const char* preferred_script)
         screen_height = 720 * screen_ratio1 / screen_ratio2;
 #endif
         break;
+    case ScriptHandler::SCREEN_SIZE_w1080:
+        screen_ratio1 = 1;
+        screen_ratio2 = 1;
+        // Half of 1080 dimensions, for use in 2x mode
+#ifdef USE_2X_MODE
+        screen_width  = 960 * screen_ratio1 / screen_ratio2;
+        screen_height = 540 * screen_ratio1 / screen_ratio2;
+#else
+        screen_width  = 1920 * screen_ratio1 / screen_ratio2;
+        screen_height = 1080 * screen_ratio1 / screen_ratio2;
+#endif
+        break;
     case ScriptHandler::SCREEN_SIZE_640x480:
     default:
 #ifdef PDA
