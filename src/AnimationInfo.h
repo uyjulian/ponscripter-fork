@@ -91,6 +91,7 @@ public:
     bool skip_whitespace;
     bool is_centered_text;
     bool twox;
+    bool isflipped;
 
 #ifndef NO_LAYER_EFFECTS
     int layer_no; //Mion: for Layer effects
