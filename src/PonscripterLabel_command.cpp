@@ -2037,12 +2037,14 @@ int PonscripterLabel::ldCommand(const pstring& cmd)
     }
     else {
         if (no >= 0) {
+            //(script_width/4) * (i+1)
             dirty_rect.add(tachi_info[no].pos);
             tachi_info[no].setImageName(buf);
             parseTaggedString(&tachi_info[no]);
             setupAnimationInfo(&tachi_info[no]);
             if (tachi_info[no].image_surface) {
-                tachi_info[no].pos.x = screen_width * (no + 1) / 4 -
+                //tachi_info[no].pos.x = screen_width * (no + 1) / 4 -
+                tachi_info[no].pos.x = humanpos[no] -
                                        tachi_info[no].pos.w / 2;
                 tachi_info[no].pos.y = underline_value -
                                        tachi_info[no].image_surface->h + 1;

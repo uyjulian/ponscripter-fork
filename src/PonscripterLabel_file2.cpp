@@ -433,6 +433,12 @@ int PonscripterLabel::loadSaveFile2(SaveFileType file_type, int file_version)
     }
 
     if (file_version >= 204) { readInt(); readInt(); }
+
+    if (file_version >= 207) {
+        for (i=0; i<3; i++)
+            humanpos[i] = readInt();
+        underline_value = readInt();
+    }
     
     i = readInt();
     current_label_info = script_h.getLabelByLine(i);
@@ -729,6 +735,10 @@ void PonscripterLabel::saveSaveFile2(bool output_flag)
 
     writeInt(0, output_flag);
     writeInt(0, output_flag);
+
+    for (i=0; i<3; i++)
+        writeInt( humanpos[i], output_flag ); // added in version 207
+    writeInt( underline_value, output_flag ); // added in version 207
 
     writeInt(current_label_info.start_line + current_line, output_flag);
     const char* buf =

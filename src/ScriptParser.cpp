@@ -88,6 +88,7 @@ func_lut_t::func_lut_t() {
     dict["gosub"]           = &ScriptParser::gosubCommand;
     dict["goto"]            = &ScriptParser::gotoCommand;
     dict["humanz"]          = &ScriptParser::humanzCommand;
+    dict["humanpos"]        = &ScriptParser::humanposCommand;
     dict["if"]              = &ScriptParser::ifCommand;
     dict["inc"]             = &ScriptParser::incCommand;
     dict["intlimit"]        = &ScriptParser::intlimitCommand;
@@ -342,8 +343,8 @@ int ScriptParser::open(const char* preferred_script)
         screen_ratio1 = 1;
         screen_ratio2 = 1;
 #endif
-        screen_width  = 800 * screen_ratio1 / screen_ratio2;
-        screen_height = 600 * screen_ratio1 / screen_ratio2;
+        script_width = 800;
+        script_height = 600;
         break;
     case ScriptHandler::SCREEN_SIZE_400x300:
 #ifdef PDA
@@ -353,25 +354,25 @@ int ScriptParser::open(const char* preferred_script)
         screen_ratio1 = 1;
         screen_ratio2 = 1;
 #endif
-        screen_width  = 400 * screen_ratio1 / screen_ratio2;
-        screen_height = 300 * screen_ratio1 / screen_ratio2;
+        script_width = 400;
+        script_height = 300;
         break;
     case ScriptHandler::SCREEN_SIZE_320x240:
         screen_ratio1 = 1;
         screen_ratio2 = 1;
-        screen_width  = 320 * screen_ratio1 / screen_ratio2;
-        screen_height = 240 * screen_ratio1 / screen_ratio2;
+        script_width = 320;
+        script_height = 240;
         break;
     case ScriptHandler::SCREEN_SIZE_w720:
         screen_ratio1 = 1;
         screen_ratio2 = 1;
         // Half of 720 dimensions, for use in 2x mode
 #ifdef USE_2X_MODE
-        screen_width  = 640 * screen_ratio1 / screen_ratio2;
-        screen_height = 360 * screen_ratio1 / screen_ratio2;
+        script_width  = 640;
+        script_height = 360;
 #else
-        screen_width  = 1280 * screen_ratio1 / screen_ratio2;
-        screen_height = 720 * screen_ratio1 / screen_ratio2;
+        script_width  = 1280;
+        script_height = 720;
 #endif
         break;
     case ScriptHandler::SCREEN_SIZE_w1080:
@@ -379,11 +380,11 @@ int ScriptParser::open(const char* preferred_script)
         screen_ratio2 = 1;
         // Half of 1080 dimensions, for use in 2x mode
 #ifdef USE_2X_MODE
-        screen_width  = 960 * screen_ratio1 / screen_ratio2;
-        screen_height = 540 * screen_ratio1 / screen_ratio2;
+        script_width  = 960;
+        script_height = 540;
 #else
-        screen_width  = 1920 * screen_ratio1 / screen_ratio2;
-        screen_height = 1080 * screen_ratio1 / screen_ratio2;
+        script_width  = 1920;
+        script_height = 1080;
 #endif
         break;
     case ScriptHandler::SCREEN_SIZE_640x480:
@@ -395,15 +396,23 @@ int ScriptParser::open(const char* preferred_script)
         screen_ratio1 = 1;
         screen_ratio2 = 1;
 #endif
-        screen_width  = 640 * screen_ratio1 / screen_ratio2;
-        screen_height = 480 * screen_ratio1 / screen_ratio2;
+        script_width  = 640;
+        script_height = 480;
         break;
     }
+
+    screen_width  = script_width * screen_ratio1 / screen_ratio2;
+    screen_height = script_height * screen_ratio1 / screen_ratio2;
     
 #ifdef USE_2X_MODE
     screen_width  *= 2;
     screen_height *= 2;
 #endif
+    for (int i=0; i<3; i++)
+        humanpos[i] = (screen_width/4) * (i+1);
+    if (debug_level > 0)
+        printf("humanpos: %d,%d,%d", humanpos[0], humanpos[1],
+               humanpos[2]);
 
     return 0;
 }

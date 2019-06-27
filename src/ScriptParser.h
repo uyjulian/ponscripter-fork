@@ -161,6 +161,7 @@ public:
     int incCommand(const pstring& cmd);
     int ifCommand(const pstring& cmd);
     int humanzCommand(const pstring& cmd);
+    int humanposCommand(const pstring& cmd);
     int gotoCommand(const pstring& cmd);
     int gosubCommand(const pstring& cmd);
     int globalonCommand(const pstring& cmd);

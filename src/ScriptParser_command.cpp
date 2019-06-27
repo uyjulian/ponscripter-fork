@@ -847,6 +847,19 @@ int ScriptParser::humanzCommand(const pstring& cmd)
 }
 
 
+int ScriptParser::humanposCommand(const pstring& cmd)
+{
+    int res_multiplier = 1;
+    #ifdef USE_2X_MODE
+    res_multiplier = 2;
+    #endif
+    for (int i=0; i<3; i++)
+        humanpos[i] = script_h.readIntValue() * res_multiplier;
+
+    return RET_CONTINUE;
+}
+
+
 int ScriptParser::gotoCommand(const pstring& cmd)
 {
     setCurrentLabel(script_h.readStrValue());
