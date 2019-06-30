@@ -515,7 +515,7 @@ void UpdateMPEG(void *data, SMPEG_Frame *frame) {
 }
 
 int PonscripterLabel::playMPEG(const pstring& filename, bool click_flag, bool loop_flag,
-                               SubtitleDefs& subtitles)
+                               bool mixsound_flag, SubtitleDefs& subtitles)
 {
     int ret = 0;
 #ifndef MP3_MAD
@@ -530,8 +530,8 @@ int PonscripterLabel::playMPEG(const pstring& filename, bool click_flag, bool lo
             // let's redo the SDL mixer just for this video playback
             SDL_AudioSpec wanted;
             SMPEG_wantedSpec(mpeg_sample, &wanted);
-            if ((wanted.format != audio_format.format) ||
-                (wanted.freq != audio_format.freq))
+            if (!mixsound_flag && (wanted.format != audio_format.format ||
+                wanted.freq != audio_format.freq))
             {
                 different_spec = true;
                 Mix_CloseAudio();
