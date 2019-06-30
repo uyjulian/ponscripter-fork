@@ -834,7 +834,8 @@ private:
     int setVolumeMute(bool do_mute);
 
     SubtitleDefs parseSubtitles(pstring file);
-    int playMPEG(const pstring& filename, bool click_flag, bool loop_flag, bool mixsound_flag, SubtitleDefs& subtitles);
+    int playMPEG(const pstring& filename, bool click_flag, bool loop_flag, bool mixsound_flag,
+        bool nosound_flag, SubtitleDefs& subtitles);
     void playAVI(const pstring& filename, bool click_flag);
 
     enum { WAVE_PLAY        = 0,

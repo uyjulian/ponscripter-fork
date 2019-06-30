@@ -1543,7 +1543,7 @@ int PonscripterLabel::mpegplayCommand(const pstring& cmd)
         subtitles = parseSubtitles(script_h.readStrValue());
     }
     stopBGM(false);
-    if (playMPEG(name, cancel, false, false, subtitles))
+    if (playMPEG(name, cancel, false, false, false, subtitles))
         endCommand("end");
     return RET_CONTINUE;
 }
@@ -1552,7 +1552,7 @@ int PonscripterLabel::mpegplayCommand(const pstring& cmd)
 int PonscripterLabel::movieCommand(const pstring& cmd)
 {
     pstring name = script_h.readStrValue();
-    bool cancel = false, loop = false, mixsound = false;
+    bool cancel = false, loop = false, mixsound = false, nosound = false;
     SubtitleDefs subtitles;
 
     while (script_h.hasMoreArgs()) {
@@ -1563,11 +1563,15 @@ int PonscripterLabel::movieCommand(const pstring& cmd)
             loop = true;
         } else if (e.is_bareword("mixsound")) {
             mixsound = true;
+        } else if (e.is_bareword("nosound")) {
+            nosound = true;
         }
     }
 
-    stopBGM(false);
-    if (playMPEG(name, cancel, loop, mixsound, subtitles))
+    if (!nosound) {
+        stopBGM(false);
+    }
+    if (playMPEG(name, cancel, loop, mixsound, nosound, subtitles))
         endCommand("end");
 
     return RET_CONTINUE;

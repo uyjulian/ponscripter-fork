@@ -1480,7 +1480,7 @@ int PonscripterLabel::eventLoop()
             };
             SDL_MessageBoxData closeBoxData = {
                 SDL_MESSAGEBOX_WARNING, /* .flags */
-                NULL, /* .window */
+                screen, /* .window */
                 current_language == 1 ? "終了" : "Close", /* .title */
                 current_language == 1 ? "ゲームを終了しますか？" : "Are you sure you want to quit?", /* .message */
                 SDL_arraysize(closeButtons), /* .numbuttons */
@@ -1488,6 +1488,7 @@ int PonscripterLabel::eventLoop()
                 NULL
             };
             int closeButtonId;
+            SDL_RaiseWindow(screen);
             if (SDL_ShowMessageBox(&closeBoxData, &closeButtonId) < 0) {
                 endCommand("end");
             } else if (closeButtonId == 1) {

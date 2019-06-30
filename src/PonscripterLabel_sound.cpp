@@ -515,7 +515,7 @@ void UpdateMPEG(void *data, SMPEG_Frame *frame) {
 }
 
 int PonscripterLabel::playMPEG(const pstring& filename, bool click_flag, bool loop_flag,
-                               bool mixsound_flag, SubtitleDefs& subtitles)
+                               bool mixsound_flag, bool nosound_flag, SubtitleDefs& subtitles)
 {
     int ret = 0;
 #ifndef MP3_MAD
@@ -525,7 +525,7 @@ int PonscripterLabel::playMPEG(const pstring& filename, bool click_flag, bool lo
     if (!SMPEG_error(mpeg_sample)) {
         SMPEG_enableaudio(mpeg_sample, 0);
 
-        if (audio_open_flag) {
+        if (audio_open_flag && !nosound_flag) {
             //Mion - SMPEG doesn't handle different audio spec well, so
             // let's redo the SDL mixer just for this video playback
             SDL_AudioSpec wanted;
@@ -569,9 +569,11 @@ int PonscripterLabel::playMPEG(const pstring& filename, bool click_flag, bool lo
 
         SMPEG_setdisplay(mpeg_sample, UpdateMPEG, &c, c.lock);
 
-        SMPEG_setvolume(mpeg_sample, !volume_on_flag? 0 : music_volume);
 
-        Mix_HookMusic(mp3callback, mpeg_sample);
+        if (!nosound_flag) {
+            SMPEG_setvolume(mpeg_sample, !volume_on_flag? 0 : music_volume);
+            Mix_HookMusic(mp3callback, mpeg_sample);
+        }
 
         if (loop_flag) {
             SMPEG_loop(mpeg_sample, -1);
@@ -730,7 +732,9 @@ int PonscripterLabel::playMPEG(const pstring& filename, bool click_flag, bool lo
         ctrl_pressed_status = 0;
 
         SMPEG_stop(mpeg_sample);
-        Mix_HookMusic(NULL, NULL);
+        if (!nosound_flag) {
+            Mix_HookMusic(NULL, NULL);
+        }
         SMPEG_delete(mpeg_sample);
         SDL_DestroyTexture(video_texture);
         video_texture = NULL;
