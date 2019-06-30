@@ -1475,8 +1475,8 @@ int PonscripterLabel::eventLoop()
 
         case SDL_QUIT: {
             SDL_MessageBoxButtonData closeButtons[] = {
-                {SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, 1, current_language == 1 ? "はい" : "Yes"},
                 {0, 0, current_language == 1 ? "いいえ" : "No"},
+                {SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, 1, current_language == 1 ? "はい" : "Yes"},
             };
             SDL_MessageBoxData closeBoxData = {
                 SDL_MESSAGEBOX_WARNING, /* .flags */
