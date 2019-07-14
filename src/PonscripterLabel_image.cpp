@@ -29,7 +29,7 @@
 #include "graphics_common.h"
 
 SDL_Surface *PonscripterLabel::loadImage(const pstring& filename,
-                                        bool *has_alpha, bool twox)
+                                        bool *has_alpha, bool twox, bool isflipped)
 {
     if (!filename) return NULL;
 
@@ -107,6 +107,24 @@ SDL_Surface *PonscripterLabel::loadImage(const pstring& filename,
           breakkey:
             SDL_UnlockSurface(ret);
         }
+    }
+
+
+    if (isflipped) {
+        SDL_Surface *retf = SDL_CreateRGBSurface(0, ret->w, ret->h, BPP, RMASK, GMASK, BMASK, AMASK);
+        Uint32* sourcepix;
+        Uint32* destpix;
+        for (int y=0; y<ret->h; ++y) {
+            sourcepix = (Uint32*)((char*)ret->pixels + y * ret->pitch);
+            destpix = (Uint32*)((char*)retf->pixels + (y + 1) * ret->pitch);
+            destpix--;
+            for (int x = 0; x < ret->w; x++, sourcepix++, destpix--) {
+                *destpix = *sourcepix;
+            }
+        }
+        // swap pointer to new surface
+        SDL_FreeSurface( ret );
+        ret = retf;
     }
 
     #ifdef USE_2X_MODE
