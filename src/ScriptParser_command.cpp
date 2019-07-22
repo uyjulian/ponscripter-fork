@@ -554,9 +554,32 @@ int ScriptParser::midCommand(const pstring& cmd)
 {
     Expression e       = script_h.readStrExpr();
     pstring src        = script_h.readStrValue();
+    const char *src_char = (const char*) src;
     unsigned int start = script_h.readIntValue();
     unsigned int len   = script_h.readIntValue();
-    e.mutate(src.midstr(start, len));
+
+    pstring result = "";
+    int bytes, total_bytes = 0;
+    char ch;
+    wchar unicode;
+    for (int x = 0; x < start + len; x++) {
+        unicode = file_encoding->DecodeWithLigatures(src_char + total_bytes,
+            sentence_font, bytes);
+        if (x >= start) {
+            for (int y = 0; y < bytes; y++) {
+                ch = *(src_char + total_bytes + y);
+                if (ch == 0x0a || ch == '\0') {
+                    break;
+                }
+                result += ch;
+            }
+            if (ch == 0x0a || ch == '\0') {
+                break;
+            }
+        }
+        total_bytes += bytes;
+    }
+    e.mutate(result);
     return RET_CONTINUE;
 }
 
