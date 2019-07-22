@@ -111,6 +111,14 @@ extern long decodeOggVorbis(PonscripterLabel::MusicStruct *music_struct, Uint8 *
 #else
         long src_len = ov_read(&ovi->ovf, buf, len, 0, 2, 1, &current_section);
 #endif
+
+        if (ovi->loop == 1) {
+            ogg_int64_t pcmPos = ov_pcm_tell(&ovi->ovf);
+            if (pcmPos >= ovi->loop_end) {
+                len -= ((pcmPos - ovi->loop_end) * ovi->channels) * (long)sizeof(Uint16);
+                ov_pcm_seek(&ovi->ovf, ovi->loop_start);
+            }
+        }
         if (src_len <= 0) break;
 
         int vol = music_struct->is_mute ? 0 : music_struct->volume;
@@ -993,12 +1001,20 @@ OVInfo* PonscripterLabel::openOggVorbis(unsigned char* buf, long len,
     OVInfo* ovi = NULL;
 
 #ifdef USE_OGG_VORBIS
+
+    vorbis_comment *vc;
+    int isLoopLength = 0, i;
+    ogg_int64_t fullLength;
     ovi = new OVInfo();
 
     ovi->buf = buf;
     ovi->decoded_length = 0;
     ovi->length = len;
     ovi->pos = 0;
+    ovi->loop         = -1;
+    ovi->loop_start   = -1;
+    ovi->loop_end     =  0;
+    ovi->loop_len     =  0;
 
     ov_callbacks oc;
     oc.read_func  = oc_read_func;
@@ -1018,7 +1034,62 @@ OVInfo* PonscripterLabel::openOggVorbis(unsigned char* buf, long len,
     }
 
     channels = vi->channels;
+    ovi->channels = vi->channels;
     rate = vi->rate;
+
+    /* vorbis loop start!! */
+
+    vc = ov_comment(&ovi->ovf, -1);
+    for (i = 0; i < vc->comments; i++) {
+        int   paramLen = vc->comment_lengths[i] + 1;
+        char *param = (char *)SDL_malloc((size_t)paramLen);
+        char *argument  = param;
+        char *value     = param;
+        SDL_memset(param, 0, (size_t)paramLen);
+        SDL_memcpy(param, vc->user_comments[i], (size_t)vc->comment_lengths[i]);
+        value = SDL_strchr(param, '=');
+        if (value == NULL) {
+            value = param + paramLen - 1; /* set null */
+        } else {
+            *(value++) = '\0';
+        }
+
+        #ifdef __USE_ISOC99
+        #define A_TO_OGG64(x) (ogg_int64_t)atoll(x)
+        #else
+        #define A_TO_OGG64(x) (ogg_int64_t)atol(x)
+        #endif
+
+        if (SDL_strcasecmp(argument, "LOOPSTART") == 0)
+            ovi->loop_start = A_TO_OGG64(value);
+        else if (SDL_strcasecmp(argument, "LOOPLENGTH") == 0) {
+            ovi->loop_len = A_TO_OGG64(value);
+            isLoopLength = 1;
+        }
+        else if (SDL_strcasecmp(argument, "LOOPEND") == 0) {
+            isLoopLength = 0;
+            ovi->loop_end = A_TO_OGG64(value);
+        }
+
+        #undef A_TO_OGG64
+        SDL_free(param);
+    }
+
+    if (isLoopLength == 1)
+        ovi->loop_end = ovi->loop_start + ovi->loop_len;
+    else
+        ovi->loop_len = ovi->loop_end - ovi->loop_start;
+
+    fullLength = ov_pcm_total(&ovi->ovf, -1);
+    if (((ovi->loop_start >= 0) || (ovi->loop_end > 0)) &&
+        ((ovi->loop_start < ovi->loop_end) || (ovi->loop_end == 0)) &&
+         (ovi->loop_start < fullLength) &&
+         (ovi->loop_end <= fullLength)) {
+        if (ovi->loop_start < 0) ovi->loop_start = 0;
+        if (ovi->loop_end == 0)  ovi->loop_end = fullLength;
+        ovi->loop = 1;
+    }
+    /* vorbis loop ends!! */
 
     ovi->cvt.buf = NULL;
     ovi->cvt_len = 0;
