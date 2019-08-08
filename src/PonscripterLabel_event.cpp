@@ -404,7 +404,8 @@ void PonscripterLabel::mousePressEvent(SDL_MouseButtonEvent* event)
     if (variable_edit_mode) return;
 
     if (automode_flag) {
-        remaining_time = -1;
+        //test fixing automode
+        //remaining_time = -1;
         setAutoMode(false);
         return;
     }
@@ -477,7 +478,8 @@ void PonscripterLabel::mouseWheelEvent(SDL_MouseWheelEvent* event) {
 
 
     if (automode_flag) {
-        remaining_time = -1;
+        //test fixing automode
+        //remaining_time = -1;
         setAutoMode(false);
         return;
     }
@@ -825,7 +827,8 @@ void PonscripterLabel::keyPressEvent(SDL_KeyboardEvent* event)
     }
 
     if (automode_flag && !automode_ignore) {
-        remaining_time = -1;
+        //test fixing automode
+        //remaining_time = -1;
         setAutoMode(false);
         return;
     }
