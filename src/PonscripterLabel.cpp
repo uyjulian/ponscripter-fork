@@ -1798,6 +1798,12 @@ int PonscripterLabel::parseLine()
     }
 //--------END INDENT ROUTINE----------------------------------------------------
 
+    // If we're about to enter pretextgosub, don't do line breaking yet goddammit
+    bool isPreTextGoSub = pretextgosub_label
+        && (line_enter_status == 0
+            || (line_enter_status == 1
+                && (script_h.readStrBuf(string_buffer_offset) == '['
+                    || (zenkakko_flag && file_encoding->DecodeChar(script_h.getStrBuf(string_buffer_offset)) == 0x3010 /* left lenticular bracket */))));
     ret = textCommand();
 
 //--------LINE BREAKING ROUTINE-------------------------------------------------
@@ -1808,7 +1814,7 @@ int PonscripterLabel::parseLine()
         file_encoding->DecodeWithLigatures(script_h.getStrBuf(string_buffer_offset),
                                       f, lf);
 
-    if (is_break_char(first_ch) && !new_line_skip_flag) {
+    if (!isPreTextGoSub && is_break_char(first_ch) && !new_line_skip_flag) {
         int l;
         const char* it = script_h.getStrBuf(string_buffer_offset) + lf;
         wchar next_ch = file_encoding->DecodeWithLigatures(it, f, l);
