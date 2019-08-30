@@ -36,7 +36,15 @@
 #include "defs.h"
 #include "BaseReader.h"
 
-#define USE_2X_MODE
+// To allow 2x mode designed for reproducing old Nscripter games at 2x resolution,
+// change the following line to:
+// In this mode, everything will be drawn at 2x its normal size and position, except for
+// sprites where the image string starts with ":b"
+// e.g.
+// lsp image2x,":b;bmp\image2x.png",2,325,230
+// lsp image2x,":ba;bmp\image2x.png",2,325,230
+// #define USE_2X_MODE
+#define USE_2X_MODE_OFF
 
 #if defined (USE_X86_GFX) && !defined(MACOSX)
 #include <cpuid.h>

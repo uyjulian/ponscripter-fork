@@ -35,13 +35,13 @@ The following platforms are supported:
 
 * Any modern Linux
 * Windows 7/8
-* OSX 10.5+
+* OSX 10.9+
 
 Any issues on these platforms should be reported.
 
 ## Bugs
 
-Please report all bugs with this project in the [Issues](https://github.com/sekaiproject/ponscripter-fork/issues) section. Include your platform and, if possible, clear reproduction instructions.
+Please report all bugs with this project to chronotrig.dev@gmail.com. Include your platform and, if possible, clear reproduction instructions.
 
 
 ## Acknowledgements
@@ -68,6 +68,13 @@ noteworthy patches and bug reports that have enhanced Ponscripter:
 
 Apologies to anyone not mentioned &mdash; please let me know so I can set the
 record straight!
+
+## Witch Hunt Fork
+
+The Witch Hunt fork of this repo is brought to you with huge thanks to everyone mentioned above, but the latest changes are being maintained by chronotrig, so feel free to bother him first regarding any issues (chronotrig.dev@gmail.com).
+
+This includes 2x mode, which can be used to support older Nscripter games at 2x resolution. See AnimationInfo.h for more details on usage. This feature will eventually be added as a config setting, but meanwhile, we at the Witch Hunt will be focusing on other various bugs and projects.
+
 
 ## License
 
