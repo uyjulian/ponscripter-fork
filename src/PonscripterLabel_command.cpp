@@ -3680,7 +3680,8 @@ int PonscripterLabel::bgCommand(const pstring& cmd)
 {
     //Mion: prefer removing textwindow for bg change effects even during skip;
     //but don't remove text window if erasetextwindow == 0
-    int ret = leaveTextDisplayMode((erase_text_window_mode != 0));
+    int ret = leaveTextDisplayMode();
+    //int ret = leaveTextDisplayMode((erase_text_window_mode != 0));
     if (ret != RET_NOMATCH) return ret;
 
     Expression e = script_h.readStrExpr();
