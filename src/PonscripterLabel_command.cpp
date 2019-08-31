@@ -3395,13 +3395,13 @@ int PonscripterLabel::brCommand(const pstring& cmd)
 
     // textbufferchange
     for (i = 0; i < 2; i++) {
-        if (current_read_language == i || current_read_language == -1) {
+        //if (current_read_language == i || current_read_language == -1) {
             tag.format("=%d", ns);
             current_text_buffer[i]->addBuffer(file_encoding->TranslateTag(tag, ignored));
             current_text_buffer[i]->addBuffer(0x0a);
             tag.format("=%d", cs);
             current_text_buffer[i]->addBuffer(file_encoding->TranslateTag(tag, ignored));
-        }
+        //}
     }
 
     return RET_CONTINUE;
