@@ -292,6 +292,7 @@ sfunc_lut_t::sfunc_lut_t() {
     dict["selgosub"]         = &PonscripterLabel::selectCommand;
     dict["selnum"]           = &PonscripterLabel::selectCommand;
     dict["setcursor"]        = &PonscripterLabel::setcursorCommand;
+    dict["setdefaultspeed"]  = &PonscripterLabel::setdefaultspeedCommand;
     dict["setwindow"]        = &PonscripterLabel::setwindowCommand;
     dict["setwindow2"]       = &PonscripterLabel::setwindow2Command;
     dict["setwindow3"]       = &PonscripterLabel::setwindow3Command;

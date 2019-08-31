@@ -206,6 +206,7 @@ public:
     int setwindow2Command(const pstring& cmd);
     int setwindowCommand(const pstring& cmd);
     int setcursorCommand(const pstring& cmd);
+    int setdefaultspeedCommand(const pstring& cmd);
     int selectCommand(const pstring& cmd);
     int savetimeCommand(const pstring& cmd);
     int saveonCommand(const pstring& cmd);

@@ -897,6 +897,23 @@ int PonscripterLabel::setcursorCommand(const pstring& cmd)
 }
 
 
+int PonscripterLabel::setdefaultspeedCommand(const pstring& cmd)
+{
+    int new_text_speed_no = script_h.readIntValue();
+    // Subtract 1 so that the command matches the button pressed to set speed
+    new_text_speed_no -= 1;
+
+    if (new_text_speed_no < 0 || new_text_speed_no > 2) {
+        new_text_speed_no = 1;
+        printf("Invalid setdefaultspeed given\n");
+    }
+
+    text_speed_no = new_text_speed_no;
+
+    return RET_CONTINUE;
+}
+
+
 int PonscripterLabel::selectCommand(const pstring& cmd)
 {
     int ret = enterTextDisplayMode();
