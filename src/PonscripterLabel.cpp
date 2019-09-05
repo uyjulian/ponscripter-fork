@@ -464,6 +464,16 @@ void PonscripterLabel::initSDL()
     }
 #endif
 
+    screen_device_width  = screen_width;
+    screen_device_height = screen_height;
+
+    // use hardware scaling
+    screen_ratio1 = 1;
+    screen_ratio2 = 1;
+    screen_scale_ratio1 = (float)screen_width / screen_device_width;
+    screen_scale_ratio2 = (float)screen_height / screen_device_height;
+
+
     /*screen_surface = SDL_SetVideoMode(screen_width, screen_height, screen_bpp,
         DEFAULT_VIDEO_SURFACE_FLAG | (fullscreen_mode ? fullscreen_flags : 0));*/
 
@@ -508,6 +518,7 @@ void PonscripterLabel::initSDL()
       fprintf(stderr, "Couldn't create SDL renderer: %s\n", SDL_GetError());
       exit(-1);
     }
+    SDL_GetWindowSize(screen, &device_width, &device_height);
 
 
     SDL_RenderSetLogicalSize(renderer, screen_width, screen_height);
@@ -1342,6 +1353,7 @@ void PonscripterLabel::reset()
     key_pressed_flag = false;
     shift_pressed_status = 0;
     ctrl_pressed_status  = 0;
+    num_fingers = 0;
     display_mode = NORMAL_DISPLAY_MODE;
     event_mode = IDLE_EVENT_MODE;
     did_leavetext = false;

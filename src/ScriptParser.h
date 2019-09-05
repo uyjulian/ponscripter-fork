@@ -287,6 +287,10 @@ protected:
 
     /* ---------------------------------------- */
     /* Global definitions */
+    int screen_ratio1, screen_ratio2;
+    int screen_device_width, screen_device_height;
+    int device_width, device_height;
+    float screen_scale_ratio1, screen_scale_ratio2;
     int preferred_width;
     int script_width, script_height;
     uint16_t    screen_width, screen_height;

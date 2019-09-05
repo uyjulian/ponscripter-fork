@@ -129,6 +129,7 @@ public:
     Uint32 getRefreshRateDelay();
 
     int  init(const char* preferred_script);
+    bool convTouchKey(SDL_TouchFingerEvent &finger);
     int  eventLoop();
 
     void reset(); // used if definereset
@@ -140,6 +141,7 @@ public:
     bool key_pressed_flag;
     int  shift_pressed_status;
     int  ctrl_pressed_status;
+    int  num_fingers; // numbur of fingers touching on the screen
 
     /* ---------------------------------------- */
     /* Commands */

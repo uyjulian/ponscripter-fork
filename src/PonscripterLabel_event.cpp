@@ -1213,6 +1213,39 @@ Uint32 PonscripterLabel::getRefreshRateDelay() {
     return 1000 / mode.refresh_rate;
 }
 
+SDL_MouseWheelEvent transTouchKey(SDL_TouchFingerEvent &finger) {
+    static struct FingerPoint {
+        float x, y;
+    } finger_start;
+
+    static Sint32 old_key = 0;
+    SDL_MouseWheelEvent mw;
+    if (finger.type == SDL_FINGERDOWN) {
+        finger_start.x = finger.x;
+        finger_start.y = finger.y;
+    } else if (finger.type == SDL_FINGERMOTION) {
+        float dtfinger = finger.y - finger_start.y;
+        Sint32 key = 0;
+        if (dtfinger > 0.5) key = -1;
+        else if (dtfinger < -0.5) key = 1;
+        if (old_key != key) {
+            mw.y = key;
+            old_key = key;
+            return mw;
+        }
+    }
+    mw.y = 0;
+    return mw;
+}
+
+bool PonscripterLabel::convTouchKey(SDL_TouchFingerEvent &finger) {
+    SDL_MouseWheelEvent mw = transTouchKey(finger);
+    if (mw.y != 0) {
+        mouseWheelEvent(&mw);
+        return true;
+    } 
+    return false;
+}
 
 /* **************************************** *
 * Event loop
@@ -1243,7 +1276,7 @@ int PonscripterLabel::eventLoop()
 
     while (SDL_WaitEvent(&event)) {
         // ignore continous SDL_MOUSEMOTION
-        while (event.type == SDL_MOUSEMOTION) {
+        while (event.type == SDL_MOUSEMOTION || event.type == SDL_FINGERMOTION) {
             if (SDL_PeepEvents(&tmp_event, 1, SDL_PEEKEVENT, SDL_FIRSTEVENT, SDL_LASTEVENT) == 0) break;
 
             // improve using keyboard/gamecontroller controls
@@ -1254,13 +1287,74 @@ int PonscripterLabel::eventLoop()
                 last_mouse_y = ( (SDL_MouseButtonEvent *) &event)->y;
             }
 
-            if (tmp_event.type != SDL_MOUSEMOTION) break;
+            if (tmp_event.type != SDL_MOUSEMOTION && tmp_event.type != SDL_FINGERMOTION) break;
 
             SDL_PeepEvents(&tmp_event, 1, SDL_GETEVENT, SDL_FIRSTEVENT, SDL_LASTEVENT);
             event = tmp_event;
         }
 
         switch (event.type) {
+        case SDL_FINGERMOTION:
+        {
+            if (!btndown_flag && convTouchKey(event.tfinger)) break;
+            tmp_event.motion.x = device_width * event.tfinger.x - (device_width - screen_device_width) / 2;
+            tmp_event.motion.y = device_height * event.tfinger.y - (device_height - screen_device_height) / 2;
+            mouseMoveEvent( &tmp_event.motion );
+            if (btndown_flag){
+                event.button.type = SDL_MOUSEBUTTONDOWN;
+                event.button.button = SDL_BUTTON_LEFT;
+                if (SDL_GetNumTouchFingers(event.tfinger.touchId) >= 2)
+                    event.button.button = SDL_BUTTON_RIGHT;
+                event.button.x = tmp_event.motion.x;
+                event.button.y = tmp_event.motion.y;
+                mousePressEvent( &event.button );
+            }
+        }
+            break;
+        case SDL_FINGERDOWN:
+        {
+            convTouchKey(event.tfinger);
+            tmp_event.motion.x = device_width * event.tfinger.x - (device_width - screen_device_width) / 2;
+            tmp_event.motion.y = device_height * event.tfinger.y - (device_height - screen_device_height) / 2;
+            current_button_state.down_x = tmp_event.motion.x;
+            current_button_state.down_y = tmp_event.motion.y;
+            current_button_state.ignore_mouseup = false;     
+            if ( btndown_flag ){
+                tmp_event.button.type = SDL_MOUSEBUTTONDOWN;
+                tmp_event.button.button = SDL_BUTTON_LEFT;
+                if (SDL_GetNumTouchFingers(event.tfinger.touchId) >= 2)
+                    tmp_event.button.button = SDL_BUTTON_RIGHT;
+                tmp_event.button.x = device_width * event.tfinger.x - (device_width - screen_device_width) / 2;
+                tmp_event.button.y = device_height * event.tfinger.y - (device_height - screen_device_height) / 2;
+                mousePressEvent( &tmp_event.button );
+            }
+            {
+                num_fingers = SDL_GetNumTouchFingers(event.tfinger.touchId);
+                if (num_fingers >= 3){
+                    tmp_event.key.keysym.sym = SDLK_LCTRL;
+                    keyDownEvent( &tmp_event.key );
+                }
+            }
+        }
+            break;
+        case SDL_FINGERUP:
+        {
+            if (num_fingers == 0) break;
+            {
+                tmp_event.button.type = SDL_MOUSEBUTTONUP;
+                tmp_event.button.button = SDL_BUTTON_LEFT;
+                if (num_fingers == 2)
+                    tmp_event.button.button = SDL_BUTTON_RIGHT;
+                tmp_event.button.x = device_width * event.tfinger.x - (device_width - screen_device_width) / 2;
+                tmp_event.button.y = device_height * event.tfinger.y - (device_height - screen_device_height) / 2;
+                mousePressEvent( &tmp_event.button );
+            }
+            tmp_event.key.keysym.sym = SDLK_LCTRL;
+            keyUpEvent( &tmp_event.key );
+            num_fingers = 0;
+        }
+            break;
+#if 0
         case SDL_MOUSEMOTION:
             mouseMoveEvent((SDL_MouseMotionEvent*) &event);
             break;
@@ -1278,6 +1372,7 @@ int PonscripterLabel::eventLoop()
         case SDL_MOUSEWHEEL:
             mouseWheelEvent(&event.wheel);
             break;
+#endif
 
         // NOTE: we reverse KEYUP and KEYDOWN for controller presses, because otherwise it feels really slow and junky
         // If necessary, we can make keyPressEvent actually interpret controller keys but this works fine for now
