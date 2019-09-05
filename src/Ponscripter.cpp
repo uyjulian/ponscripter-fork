@@ -31,6 +31,7 @@
 
 #if defined(__SWITCH__)
 #include <switch.h>
+u32 __nx_applet_exit_mode = 1;
 #endif
 
 #define CFG_FILE "pns.cfg"
