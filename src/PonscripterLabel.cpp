@@ -49,7 +49,6 @@ typedef HRESULT (WINAPI * GETFOLDERPATH)(HWND, int, HANDLE, DWORD, LPTSTR);
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <linux/limits.h>
 #include <pwd.h>
 #endif
 
@@ -354,6 +353,55 @@ void PonscripterLabel::initSteam() {
 }
 #endif
 
+static int TouchEventFilter(void* userdata, SDL_Event* event) {
+    SDL_Event fixed_event;
+    memset(&fixed_event, 0, sizeof(fixed_event));
+
+    if (event->type == SDL_FINGERDOWN) {
+        fixed_event.type = SDL_MOUSEBUTTONDOWN;
+        fixed_event.button.type = SDL_MOUSEBUTTONDOWN;
+        fixed_event.button.timestamp = event->tfinger.timestamp;
+        fixed_event.button.which = SDL_TOUCH_MOUSEID;
+        fixed_event.button.button = SDL_BUTTON_LEFT;
+        fixed_event.button.state = SDL_PRESSED;
+        fixed_event.button.clicks = 1;
+        fixed_event.button.x = event->tfinger.x * 1280;
+        fixed_event.button.y = event->tfinger.y * 720;
+        SDL_PushEvent(&fixed_event);
+        return 1;
+    }
+
+    if (event->type == SDL_FINGERUP) {
+        fixed_event.type = SDL_MOUSEBUTTONUP;
+        fixed_event.button.type = SDL_MOUSEBUTTONUP;
+        fixed_event.button.timestamp = event->tfinger.timestamp;
+        fixed_event.button.which = SDL_TOUCH_MOUSEID;
+        fixed_event.button.button = SDL_BUTTON_LEFT;
+        fixed_event.button.state = SDL_RELEASED;
+        fixed_event.button.clicks = 1;
+        fixed_event.button.x = event->tfinger.x * 1280;
+        fixed_event.button.y = event->tfinger.y * 720;
+        SDL_PushEvent(&fixed_event);
+        return 1;
+    }
+
+    if (event->type == SDL_FINGERMOTION) {
+        fixed_event.type = SDL_MOUSEMOTION;
+        fixed_event.motion.type = SDL_MOUSEMOTION;
+        fixed_event.motion.timestamp = event->tfinger.timestamp;
+        fixed_event.motion.which = SDL_TOUCH_MOUSEID;
+        fixed_event.motion.x = event->tfinger.x * 1280;
+        fixed_event.motion.y = event->tfinger.y * 720;
+        fixed_event.motion.xrel = event->tfinger.dx * 1280;
+        fixed_event.motion.yrel = event->tfinger.dy * 720;
+        SDL_PushEvent(&fixed_event);
+        return 1;
+    }
+
+    return 0;
+}
+
+
 void PonscripterLabel::initSDL()
 {
     /* ---------------------------------------- */
@@ -373,6 +421,7 @@ void PonscripterLabel::initSDL()
     if (SDL_InitSubSystem(SDL_INIT_JOYSTICK) == 0 && SDL_JoystickOpen(0) != 0)
         printf("Initialize JOYSTICK\n");
 #endif
+    // SDL_SetEventFilter(TouchEventFilter, NULL);
 
 #if defined (PSP) || defined (IPODLINUX)
     SDL_ShowCursor(SDL_DISABLE);
@@ -503,18 +552,6 @@ void PonscripterLabel::initSDL()
     //(cmd-line option --use-app-icons to prefer app resources over icon.png)
     //(Mac apps can set use-app-icons in a pns.cfg file within the
     //bundle, to have it always use the bundle icns)
-#ifndef MACOSX
-    if (!icon || use_app_icons) {
-        const InternalResource* internal_icon = getResource("icon.png");
-        if (internal_icon) {
-            if (icon) SDL_FreeSurface(icon);
-            SDL_RWops* rwicon = SDL_RWFromConstMem(internal_icon->buffer,
-                                                   internal_icon->size);
-            icon = IMG_Load_RW(rwicon, 0);
-            use_app_icons = false;
-        }
-    }
-#endif //!MACOSX
     // If an icon was found (and desired), use it.
     if (icon && !use_app_icons) {
 #if defined(MACOSX) || defined(WIN32)
@@ -994,7 +1031,7 @@ pstring Platform_GetSavePath(pstring gameid) // MacOS X version
     PonscripterMessage(Error, "Save Directory Failure", "Could not create save directory.");
     exit(1);
 }
-#elif defined LINUX
+#elif 0
 pstring Platform_GetSavePath(pstring gameid) // POSIX version
 {
     if (!gameid) {

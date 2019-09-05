@@ -631,7 +631,7 @@ int PonscripterLabel::skipoffCommand(const pstring& cmd)
 }
 
 
-#ifdef LINUX
+#if 0
 int tryToLaunch(const char* command, const char* target)
 {
     if (!command || !target) return -1;
@@ -683,7 +683,7 @@ int PonscripterLabel::shellCommand(const pstring& cmd)
     CFRelease(url);
     CFRelease(url_string);
     
-#elif defined LINUX
+#elif 0
     // Linux/BSD/other Unixes don't provide standard APIs for this
     // kind of thing, but there are various things we can try.
     

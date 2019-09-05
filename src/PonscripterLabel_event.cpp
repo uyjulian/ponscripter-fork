@@ -145,6 +145,29 @@ SDL_Keycode transJoystickButton(Uint8 button)
                             SDLK_UNKNOWN, /* HOME     */ /* kernel mode only */
                             SDLK_UNKNOWN, /* HOLD     */ };
     return button_map[button];
+#elif defined(__SWITCH__)
+    SDL_Keycode button_map[] = {
+        SDLK_RETURN,      /* A     */
+        SDLK_ESCAPE,      /* B     */
+        SDLK_SPACE,       /* X     */
+        SDLK_RCTRL,       /* Y     */
+        SDLK_UNKNOWN,     /* x     */
+        SDLK_UNKNOWN,     /* x     */
+        SDLK_UNKNOWN,     /* x     */
+        SDLK_UNKNOWN,     /* x     */
+        SDLK_UNKNOWN,     /* x     */
+        SDLK_UNKNOWN,     /* x     */
+        SDLK_a,           /* PLUS  */
+        SDLK_0,           /* MINUS */
+        SDLK_LEFT,        /* LEFT  */
+        SDLK_UP,          /* UP    */
+        SDLK_RIGHT,       /* RIGHT */
+        SDLK_DOWN,        /* DOWN  */
+        SDLK_UNKNOWN,     /* x     */
+        SDLK_UNKNOWN,
+        SDLK_UNKNOWN,
+    };
+    return button_map[button];
 #endif
     return SDLK_UNKNOWN;
 }

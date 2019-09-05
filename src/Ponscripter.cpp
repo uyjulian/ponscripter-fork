@@ -29,6 +29,10 @@
 
 #include <cstdio>
 
+#if defined(__SWITCH__)
+#include <switch.h>
+#endif
+
 #define CFG_FILE "pns.cfg"
 
 static void optionHelp()
@@ -376,6 +380,13 @@ int main(int argc, char** argv)
     // ----------------------------------------
     // Parse options
     bool hasArchivePath = false;
+#if defined(__SWITCH__)
+    if (!R_FAILED(romfsInit())) {
+        ons.setArchivePath("romfs:/");
+        std::string argv_str(argv[0]);
+        ons.setSavePath(argv_str.substr(0, argv_str.find_last_of("/")).c_str());
+    }
+#endif
 #ifdef MACOSX
     if (ons.isBundled()) {
         const int maxpath=32768;

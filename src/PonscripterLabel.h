@@ -36,7 +36,7 @@
 #ifdef MP3_MAD
 #include "MadWrapper.h"
 #else
-#include <smpeg.h>
+#include <smpeg2/smpeg.h>
 #endif
 
 #define DEFAULT_VIDEO_SURFACE_FLAG (SDL_SWSURFACE)

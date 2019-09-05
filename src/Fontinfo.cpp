@@ -158,13 +158,6 @@ Font* FontsStruct::font(int style)
 
                 font_[style] = new Font(data, len, mdat, mlen);
             }
-            else {
-                const InternalResource *fres, *mres = NULL;
-                fres = getResource(mapping[style]);
-                if (metrics[style]) mres = getResource(metrics[style]);
-
-                if (fres) font_[style] = new Font(fres, mres);
-            }
         }
 
         // Fall back on default.ttf if no font was specified and
