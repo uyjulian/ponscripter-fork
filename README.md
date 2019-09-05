@@ -33,16 +33,13 @@ the Steam platforms are our primary targets.
 
 The following platforms are supported:
 
-* Any modern Linux
-* Windows 7/8
-* OSX 10.9+
+* Nintendo Switch
 
 Any issues on these platforms should be reported.
 
 ## Bugs
 
-Please report all bugs with this project to chronotrig.dev@gmail.com. Include your platform and, if possible, clear reproduction instructions.
-
+Please report all bugs with this project to the e-mail indicated in the git repository. Include your platform and, if possible, clear reproduction instructions.
 
 ## Acknowledgements
 
@@ -75,6 +72,11 @@ The Witch Hunt fork of this repo is brought to you with huge thanks to everyone 
 
 This includes 2x mode, which can be used to support older Nscripter games at 2x resolution. See AnimationInfo.h for more details on usage. This feature will eventually be added as a config setting, but meanwhile, we at the Witch Hunt will be focusing on other various bugs and projects.
 
+## Nintendo Switch Fork
+
+This fork contains changes required to support Nintendo Switch, such as touch screen support and RomFS support.  
+These changes are ported from ONScripter-Switch, located on the World Wide Web at the following URL: https://github.com/uyjulian/onscripter-switch  
+This fork is maintained by Julian Uy, and he can be contacted at the e-mail indicated in the git repository.
 
 ## License
 
