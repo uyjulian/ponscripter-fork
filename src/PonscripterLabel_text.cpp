@@ -437,7 +437,9 @@ int PonscripterLabel::clickNewPage(bool display_char)
     if (display_char) {
         drawChar(c, &sentence_font, true, true, accumulation_surface,
                  &text_info);
-        ++num_chars_in_sentence;
+        if (current_read_language == -1 || current_read_language == current_language) {
+            ++num_chars_in_sentence;
+        }
     }
     
     if (skip_flag || draw_one_page_flag || skip_to_wait ||
@@ -724,8 +726,10 @@ int PonscripterLabel::processText()
 
         drawChar(script_h.getStrBuf(string_buffer_offset), &sentence_font,
                  flush_flag, true, accumulation_surface, &text_info);
-        ++num_chars_in_sentence;
 
+        if (current_read_language == -1 || current_read_language == current_language) {
+            ++num_chars_in_sentence;
+        }
         if (flush_flag) {
             event_mode = WAIT_SLEEP_MODE;
             int wait_time = 0;
