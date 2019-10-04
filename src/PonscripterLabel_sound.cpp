@@ -1039,6 +1039,7 @@ OVInfo* PonscripterLabel::openOggVorbis(unsigned char* buf, long len,
 
     /* vorbis loop start!! */
 
+#if 0
     vc = ov_comment(&ovi->ovf, -1);
     for (i = 0; i < vc->comments; i++) {
         int   paramLen = vc->comment_lengths[i] + 1;
@@ -1074,6 +1075,7 @@ OVInfo* PonscripterLabel::openOggVorbis(unsigned char* buf, long len,
         #undef A_TO_OGG64
         SDL_free(param);
     }
+#endif
 
     if (isLoopLength == 1)
         ovi->loop_end = ovi->loop_start + ovi->loop_len;
