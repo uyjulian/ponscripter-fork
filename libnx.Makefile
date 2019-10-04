@@ -46,7 +46,7 @@ INCLUDES	:=	src
 
 APP_TITLE   := PONScripter
 APP_AUTHOR  := Mion et al.
-APP_VERSION := 1.0.0
+APP_VERSION := 1.1.0
 APP_TITLEID := CFD7804195B3234D
 
 #---------------------------------------------------------------------------------
